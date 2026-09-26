@@ -1,4 +1,4 @@
-const CACHE_NAME = "unilost-v1.6.0";
+const CACHE_NAME = "unilost-v1.7.0";
 
 const FILES_TO_CACHE = [
     "./",
@@ -71,14 +71,26 @@ self.addEventListener("fetch", event => {
 async function readStoreValues(database, storeName) {
     return new Promise((resolve, reject) => {
         const request = database.transaction(storeName, "readonly").objectStore(storeName).getAll();
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = () => {
+            request.result.onversionchange = () => request.result.close();
+            resolve(request.result);
+        };
         request.onerror = () => reject(request.error);
     });
 }
 
 async function syncOfflineQueue() {
     const database = await new Promise((resolve, reject) => {
-        const request = indexedDB.open("unilost-offline", 1);
+        const request = indexedDB.open("unilost-offline", 2);
+        request.onupgradeneeded = () => {
+            const upgradedDatabase = request.result;
+            if (!upgradedDatabase.objectStoreNames.contains("objects")) {
+                upgradedDatabase.createObjectStore("objects", { keyPath: "id" });
+            }
+            if (!upgradedDatabase.objectStoreNames.contains("settings")) {
+                upgradedDatabase.createObjectStore("settings", { keyPath: "key" });
+            }
+        };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
@@ -88,12 +100,14 @@ async function syncOfflineQueue() {
     ]);
     const token = settings.find(setting => setting.key === "token")?.value;
     if (!token) {
+        database.close();
         return;
     }
 
     const pending = records.filter(record => record.syncStatus === "pending" && !record.deleted);
     const deletedIds = records.filter(record => record.deleted).map(record => record.id);
     if (pending.length === 0 && deletedIds.length === 0) {
+        database.close();
         return;
     }
 
@@ -131,6 +145,7 @@ async function syncOfflineQueue() {
         transaction.onerror = () => reject(transaction.error);
         transaction.onabort = () => reject(transaction.error);
     });
+    database.close();
 }
 
 self.addEventListener("sync", event => {

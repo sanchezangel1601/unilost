@@ -38,6 +38,7 @@ Las contraseñas se guardan como hashes `scrypt` en el servidor. Los datos persi
 - Las fotos se reducen antes de guardarse para limitar el espacio utilizado.
 - Los cambios hechos sin conexión quedan marcados como pendientes. La app los envía cuando vuelve la conexión; también usa Background Sync cuando el navegador lo soporta.
 - Los cambios enviados desde otros dispositivos aparecen al iniciar sesión y sincronizar.
+- Al actualizar una instalación anterior, IndexedDB se migra automáticamente a la versión 2 sin borrar los reportes existentes y crea el almacén local de sesión que necesitan el acceso y la cola de sincronización.
 
 El inicio de sesión/registro y la primera carga requieren conexión con el servidor. Para trabajar offline, inicia sesión y abre la app al menos una vez antes de perder Internet. Los datos locales antiguos de `localStorage` se importan a IndexedDB al iniciar.
 

@@ -46,7 +46,7 @@ institutionEmail.textContent = authConfig.institutionalEmail || "";
 function openDatabase() {
     if (!databasePromise) {
         databasePromise = new Promise((resolve, reject) => {
-            const request = indexedDB.open("unilost-offline", 1);
+            const request = indexedDB.open("unilost-offline", 2);
             request.onupgradeneeded = () => {
                 const database = request.result;
                 if (!database.objectStoreNames.contains("objects")) {
@@ -56,7 +56,14 @@ function openDatabase() {
                     database.createObjectStore("settings", { keyPath: "key" });
                 }
             };
-            request.onsuccess = () => resolve(request.result);
+            request.onsuccess = () => {
+                const database = request.result;
+                database.onversionchange = () => {
+                    database.close();
+                    databasePromise = null;
+                };
+                resolve(database);
+            };
             request.onerror = () => reject(request.error);
         });
     }
