@@ -45,6 +45,10 @@ El inicio de sesión/registro y la primera carga requieren conexión con el serv
 
 `localhost` solo es accesible desde tu equipo. El archivo `render.yaml` configura el despliegue en Render: Node, chequeo de salud, HTTPS administrado y un disco persistente para cuentas, sesiones y publicaciones.
 
+La demostración pública actual está en <https://unilost-6vwg.onrender.com/>. Usa el plan gratuito existente: puede tardar alrededor de 50 segundos en despertar después de inactividad y su sistema de archivos es temporal. No guardes datos importantes en esa instancia; al reiniciarse o desplegarse se pueden perder cuentas y publicaciones. Para conservarlos, usa el disco persistente definido en `render.yaml`, que requiere un plan de pago.
+
+El inicio de sesión con Microsoft requiere que la universidad proporcione y autorice `MICROSOFT_CLIENT_ID`; hasta entonces se puede probar el registro de cuenta UniLost.
+
 1. El proyecto está publicado en `https://github.com/sanchezangel1601/unilost`. No subas `node_modules`, `.unilost-data` ni archivos `.env`; están excluidos en `.gitignore`.
 2. En Render elige **New > Blueprint**, conecta ese repositorio y confirma los valores de `render.yaml`.
 3. En las variables de entorno del servicio, introduce el **Application (client) ID** de Microsoft Entra como `MICROSOFT_CLIENT_ID`.
