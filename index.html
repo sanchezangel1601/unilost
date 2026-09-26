@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#102b66">
+    <meta name="description" content="UniLost - Sistema de objetos perdidos y encontrados">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <title>UniLost</title>
+</head>
+<body>
+    <section id="loginView" class="login-view">
+        <div class="login-card">
+            <a class="brand login-brand" href="#" aria-label="UniLost inicio">
+                <span class="brand-mark">U</span>
+                <span>UniLost</span>
+            </a>
+            <p class="eyebrow">PORTAL UNIVERSITARIO</p>
+            <h1>Encuentra lo que<br>pertenece a alguien.</h1>
+            <p class="login-copy">Inicia sesión para explorar reportes de objetos perdidos y encontrados en tu institución.</p>
+
+            <section class="institution-login" aria-labelledby="institutionTitle">
+                <p class="eyebrow" id="institutionTitle">ACCESO INSTITUCIONAL</p>
+                <button type="button" id="microsoftLoginButton" class="microsoft-button">
+                    <span class="microsoft-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                    <span>Continuar con Microsoft</span>
+                </button>
+                <p class="institution-email">Cuenta sugerida: <strong id="institutionEmail"></strong></p>
+                <p id="microsoftMessage" class="login-message" role="status" aria-live="polite"></p>
+            </section>
+
+            <div class="login-divider"><span>o usa tu cuenta UniLost</span></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario o correo UniLost</label>
+                    <input type="text" id="username" autocomplete="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="primary-button">Iniciar sesión <span aria-hidden="true">→</span></button>
+                <button type="button" id="registerButton" class="secondary-button">Crear una cuenta</button>
+                <p id="loginMessage" class="login-message" role="alert"></p>
+            </form>
+            <form id="registerForm" class="register-form hidden">
+                <div class="form-group">
+                    <label for="registerUsername">Nombre de usuario</label>
+                    <input type="text" id="registerUsername" autocomplete="username" minlength="3" maxlength="32" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Correo electrónico</label>
+                    <input type="email" id="registerEmail" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña</label>
+                    <input type="password" id="registerPassword" autocomplete="new-password" minlength="8" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar contraseña</label>
+                    <input type="password" id="confirmPassword" autocomplete="new-password" minlength="8" required>
+                </div>
+                <button type="submit" class="primary-button">Crear cuenta <span aria-hidden="true">→</span></button>
+                <button type="button" id="backToLoginButton" class="secondary-button">Volver a iniciar sesión</button>
+                <p id="registerMessage" class="login-message" role="alert"></p>
+            </form>
+            <p class="login-note">Tus publicaciones se guardan en este dispositivo.</p>
+        </div>
+    </section>
+
+    <div id="appView" class="hidden">
+        <header class="site-header">
+            <a class="brand" href="#" aria-label="UniLost inicio">
+                <span class="brand-mark">U</span>
+                <span>UniLost</span>
+            </a>
+            <nav class="main-nav" aria-label="Navegación principal">
+                <button class="nav-link active" data-page="explore">Explorar objetos</button>
+                <button class="nav-link" data-page="report">Reportar objeto</button>
+                <button class="nav-link" data-page="mine">Mis publicaciones</button>
+            </nav>
+            <div class="header-actions">
+                <button id="shareButton" class="icon-button" aria-label="Compartir" title="Compartir">↗</button>
+                <button id="installButton" class="install-button hidden">Instalar app</button>
+                <span id="syncStatus" class="sync-pill" role="status" aria-live="polite">Solo en este dispositivo</span>
+                <span id="currentUser" class="current-user"></span>
+                <button id="logoutButton" class="logout-button">Salir</button>
+            </div>
+        </header>
+
+        <main class="app-shell">
+        <section id="explorePage" class="page-view">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">COMUNIDAD UNIVERSITARIA</p>
+                    <h1>Objetos perdidos y encontrados</h1>
+                    <p>Un lugar para ayudar a cada objeto a volver a casa.</p>
+                </div>
+                <button class="primary-button heading-action" data-go-page="report">＋ Reportar objeto</button>
+            </div>
+
+            <section class="browse-tools" aria-label="Buscar y filtrar objetos">
+                <label class="search-wrap" for="search">
+                    <span aria-hidden="true">⌕</span>
+                    <input type="search" id="search" placeholder="Buscar por nombre, lugar o descripción...">
+                </label>
+                <div class="filters" role="group" aria-label="Filtrar por tipo">
+                    <button class="filter active" data-filter="Todos">Todos</button>
+                    <button class="filter" data-filter="Perdido">Perdidos</button>
+                    <button class="filter" data-filter="Encontrado">Encontrados</button>
+                </div>
+            </section>
+
+            <div class="section-title">
+                <div>
+                    <h2>Publicaciones recientes</h2>
+                    <p>Reportes compartidos por la comunidad</p>
+                </div>
+                <span id="counter">0 objetos</span>
+            </div>
+
+            <div id="objectsContainer" class="objects-grid"></div>
+            <div id="emptyMessage" class="empty">
+                <div class="empty-mark">⌕</div>
+                <h3>Aún no hay publicaciones</h3>
+                <p>Cuando alguien reporte un objeto, aparecerá aquí.</p>
+                <button class="secondary-button" data-go-page="report">Crear primer reporte</button>
+            </div>
+        </section>
+
+        <section id="reportPage" class="page-view hidden">
+            <div class="page-heading compact-heading">
+                <div>
+                    <p class="eyebrow">NUEVO REPORTE</p>
+                    <h1>Reportar un objeto</h1>
+                    <p>Comparte los detalles para que la comunidad pueda ayudar.</p>
+                </div>
+            </div>
+            <div class="report-layout">
+                <section class="form-panel">
+                    <div class="panel-heading">
+                        <span class="step-number">01</span>
+                        <div><h2>Información del objeto</h2><p>Los campos marcados son obligatorios.</p></div>
+                    </div>
+
+                    <form id="objectForm">
+                        <div class="form-group">
+                            <label for="type">¿Qué deseas reportar?</label>
+                            <div class="type-options">
+                                <label class="type-option"><input type="radio" name="type" value="Perdido" required><span><strong>Perdí un objeto</strong><small>Estoy buscando algo</small></span></label>
+                                <label class="type-option"><input type="radio" name="type" value="Encontrado"><span><strong>Encontré un objeto</strong><small>Quiero localizar a su dueño</small></span></label>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Nombre del objeto</label>
+                                <input type="text" id="name" placeholder="Ej. Audífonos inalámbricos" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="date">Fecha</label>
+                                <input type="date" id="date" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">¿Dónde se perdió o encontró?</label>
+                            <input type="text" id="location" placeholder="Ej. Biblioteca, segundo piso" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="photo">Foto del objeto <span class="label-optional">Opcional</span></label>
+                            <input type="file" id="photo" accept="image/*">
+                            <small class="field-hint">La imagen se guarda en este dispositivo.</small>
+                            <figure id="imagePreview" class="image-preview hidden"><img id="previewImage" alt="Vista previa de la foto seleccionada"></figure>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Descripción <span class="label-optional">Incluye detalles que ayuden a identificarlo</span></label>
+                            <textarea id="description" placeholder="Color, marca, características distintivas..." required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="secondary-button" data-go-page="explore">Cancelar</button>
+                            <button type="submit" class="primary-button">Publicar reporte <span aria-hidden="true">→</span></button>
+                        </div>
+                    </form>
+                </div>
+                <aside class="report-aside">
+                    <div class="aside-icon">✳</div>
+                    <h2>Un buen reporte hace la diferencia</h2>
+                    <p>Agrega detalles específicos y un lugar claro. Así será más fácil reconocer el objeto.</p>
+                    <div class="privacy-note"><span>◎</span><p>Tu reporte quedará asociado a tu cuenta en este dispositivo.</p></div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="minePage" class="page-view hidden">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">TU ACTIVIDAD</p>
+                    <h1>Mis publicaciones</h1>
+                    <p>Administra los reportes que has compartido.</p>
+                </div>
+                <button class="primary-button heading-action" data-go-page="report">＋ Nuevo reporte</button>
+            </div>
+            <div class="stats-strip"><span class="stats-icon">▤</span><div><strong id="mineCount">0</strong><span>publicaciones tuyas</span></div></div>
+            <div class="section-title">
+                <div><h2>Tu actividad reciente</h2><p>Solo tú puedes eliminar tus reportes desde esta vista.</p></div>
+            </div>
+            <div id="mineContainer" class="objects-grid"></div>
+            <div id="mineEmpty" class="empty hidden"><div class="empty-mark">▤</div><h3>Todavía no has publicado</h3><p>Tus reportes aparecerán aquí.</p><button class="secondary-button" data-go-page="report">Crear un reporte</button></div>
+        </section>
+        </main>
+
+        <footer>
+            <a class="brand footer-brand" href="#"><span class="brand-mark">U</span><span>UniLost</span></a>
+            <p>Una comunidad que ayuda a encontrar.</p>
+            <span>© 2026 UniLost</span>
+        </footer>
+    </div>
+
+    <dialog id="detailDialog" class="detail-dialog">
+        <button id="closeDetail" class="dialog-close" aria-label="Cerrar detalle">×</button>
+        <div id="detailContent"></div>
+    </dialog>
+
+    <script src="auth-config.js"></script>
+    <script src="node_modules/@azure/msal-browser/lib/msal-browser.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

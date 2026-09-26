@@ -1,0 +1,15 @@
+{
+    "name": "unilost-pwa",
+    "version": "1.2.1",
+    "private": true,
+    "description": "UniLost PWA con almacenamiento offline y sincronización",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "dependencies": {
+        "@azure/msal-browser": "^5.23.0"
+    }
+}

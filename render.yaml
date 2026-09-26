@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: unilost
+    runtime: node
+    plan: 0.5c-512mb
+    buildCommand: npm ci
+    startCommand: node server.js
+    healthCheckPath: /health
+    disk:
+      name: unilost-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: UNILOST_DATA_DIR
+        value: /var/data
+      - key: MICROSOFT_CLIENT_ID
+        sync: false
