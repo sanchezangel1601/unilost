@@ -22,7 +22,7 @@ Para activar Microsoft SSO:
 1. En Microsoft Entra, registra una aplicación como **Single-page application (SPA)**.
 2. Agrega como redirect URI la URL exacta de la app, por ejemplo `http://localhost:3000` para desarrollo. Al publicar, agrega también la URL HTTPS pública.
 3. En **API permissions**, agrega el permiso delegado Microsoft Graph `User.Read` y solicita el consentimiento institucional si el tenant lo requiere.
-4. Copia el **Application (client) ID** en `auth-config.js`, en `clientId`.
+4. Configura el **Application (client) ID** como variable de entorno `MICROSOFT_CLIENT_ID` en el servidor. Para probar localmente en PowerShell: `$env:MICROSOFT_CLIENT_ID = "tu-client-id"` antes de ejecutar `node server.js`.
 5. Sirve la aplicación y API bajo el mismo origen y usa HTTPS en producción.
 
 La integración usa MSAL Browser con flujo de autorización PKCE. El servidor consulta `/me` en Microsoft Graph y acepta únicamente cuentas `@alumno.utmetropolitana.edu.mx`. Microsoft puede requerir que el administrador de la universidad autorice la app.
@@ -45,15 +45,15 @@ El inicio de sesión/registro y la primera carga requieren conexión con el serv
 
 `localhost` solo es accesible desde tu equipo. El archivo `render.yaml` configura el despliegue en Render: Node, chequeo de salud, HTTPS administrado y un disco persistente para cuentas, sesiones y publicaciones.
 
-1. Sube el proyecto a un repositorio GitHub. No subas `node_modules`, `.unilost-data` ni archivos `.env`; están excluidos en `.gitignore`.
+1. El proyecto está publicado en `https://github.com/sanchezangel1601/unilost`. No subas `node_modules`, `.unilost-data` ni archivos `.env`; están excluidos en `.gitignore`.
 2. En Render elige **New > Blueprint**, conecta ese repositorio y confirma los valores de `render.yaml`.
-3. En las variables de entorno del servicio, introduce el **Application (client) ID** de Microsoft Entra como `MICROSOFT_CLIENT_ID`. `SESSION_SECRET` se genera automáticamente.
+3. En las variables de entorno del servicio, introduce el **Application (client) ID** de Microsoft Entra como `MICROSOFT_CLIENT_ID`.
 4. Cuando Render dé la URL `https://...onrender.com`, agrega esa URL sin barra final como redirect URI tipo **Single-page application (SPA)** en Entra. Configura el permiso delegado Microsoft Graph `User.Read` y el consentimiento que exija la universidad.
 5. Vuelve al servicio Render y confirma el despliegue. La app y la API comparten origen y la base de datos vive en `/var/data`.
 
 Render requiere un plan de pago que admita disco persistente (el Blueprint usa `0.5c-512mb`) y cobra también el almacenamiento. Revisa los precios actuales antes de confirmar el Blueprint. No elimines el disco `unilost-data` sin una copia de seguridad. Para otro hosting, configura `PORT`, `UNILOST_DATA_DIR` y `MICROSOFT_CLIENT_ID`, y monta almacenamiento persistente en `UNILOST_DATA_DIR`.
 
-No es posible crear la URL pública desde este workspace: hace falta que conectes el repositorio a tu cuenta de Render/GitHub y agregues el client ID emitido por el administrador de Microsoft Entra.
+Después del despliegue, comparte la URL HTTPS de Render. La autenticación Microsoft no funcionará hasta que la universidad autorice el registro de la aplicación y esté configurado `MICROSOFT_CLIENT_ID`.
 
 ## Prueba de la PWA
 
